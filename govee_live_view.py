@@ -1,7 +1,7 @@
 import asyncio
 from bleak import BleakScanner
 
-TARGET_MAC = "D2:37:31:31:23:2C"
+TARGET_DEVICE_MAC = None
 
 # Global state to store the latest values for all 4 probes
 probe_data = {
@@ -20,9 +20,20 @@ def decode_temp(b):
     return f"{temp_f:.1f}°F"
 
 def detection_callback(device, advertisement_data):
-    if device.address == TARGET_MAC:
-        mdata = advertisement_data.manufacturer_data.get(0x2331)
-        if not mdata or len(mdata) < 16:
+    global TARGET_DEVICE_MAC
+    
+    # 1. Check if this is a Govee H5198 device (Manufacturer ID 0x2331)
+    if 0x2331 not in advertisement_data.manufacturer_data:
+        return
+
+    # 2. If we haven't found our target yet, lock onto this one.
+    if TARGET_DEVICE_MAC is None:
+        TARGET_DEVICE_MAC = device.address
+        print(f"\n[+] Auto-discovered Govee Device: {TARGET_DEVICE_MAC}")
+
+    if device.address == TARGET_DEVICE_MAC:
+        mdata = advertisement_data.manufacturer_data[0x2331]
+        if len(mdata) < 16:
             return
 
         pkt_type = mdata[6]
@@ -45,8 +56,9 @@ def detection_callback(device, advertisement_data):
             print(f"\r[Govee H5198] P1: {probe_data[1]:>7} | P2: {probe_data[2]:>7} | P3: {probe_data[3]:>7} | P4: {probe_data[4]:>7}", end="", flush=True)
 
 async def main():
-    print(f"--- Monitoring Govee H5198 ({TARGET_MAC}) ---")
+    print(f"--- Monitoring Govee H5198 (Auto-Discovery) ---")
     print("Aggregate view of all 4 probes:")
+    print("Waiting for device connection (looking for Manufacturer ID 0x2331)...")
     scanner = BleakScanner(detection_callback)
     await scanner.start()
     try:
