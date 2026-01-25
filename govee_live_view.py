@@ -2,6 +2,7 @@ import asyncio
 from bleak import BleakScanner
 
 TARGET_DEVICE_MAC = None
+SYNC_COMPLETE = False
 
 # Global state to store the latest values for all 4 probes
 probe_data = {
@@ -52,10 +53,13 @@ def detection_callback(device, advertisement_data):
             if p4: probe_data[4] = p4
             updated = True
         
-        if updated:
+        # Only print from callback if we are DONE syncing.
+        # During sync, the main loop handles printing.
+        if updated and SYNC_COMPLETE:
             print(f"\r[Govee H5198] P1: {probe_data[1]:>7} | P2: {probe_data[2]:>7} | P3: {probe_data[3]:>7} | P4: {probe_data[4]:>7}", end="", flush=True)
 
 async def main():
+    global SYNC_COMPLETE
     print(f"--- Monitoring Govee H5198 (Auto-Discovery) ---")
     print("Aggregate view of all 4 probes:")
     print("Searching for device and waiting for all probes to report...")
@@ -64,22 +68,24 @@ async def main():
     await scanner.start()
     
     try:
-        # Syncing Phase: Wait for all 4 probes or 30 second timeout
+        # Syncing Phase: Wait for all 4 probes or 60 second timeout
         start_wait = asyncio.get_event_loop().time()
+        
         while any(v == "--" for v in probe_data.values()):
-            found = [f"P{i}" for i, v in probe_data.items() if v != "--"]
-            missing = [f"P{i}" for i, v in probe_data.items() if v == "--"]
-            
-            status = f"\r[Syncing] Found: {', '.join(found) if found else 'None'} | Waiting for: {', '.join(missing)}"
-            print(status.ljust(60), end="", flush=True)
+            # Show current values filling in
+            status = f"\r[Syncing...] P1: {probe_data[1]:>7} | P2: {probe_data[2]:>7} | P3: {probe_data[3]:>7} | P4: {probe_data[4]:>7}"
+            print(status, end="", flush=True)
             
             if asyncio.get_event_loop().time() - start_wait > 60:
                 print("\n[!] Sync timeout (60s). Some probes may be unplugged.")
                 break
-            await asyncio.sleep(1.0)
+            await asyncio.sleep(0.5)
         
+        # Enable callback printing
+        SYNC_COMPLETE = True
         print("\n[!] Initial sync complete. Starting live monitor...\n")
         
+        # The loop just keeps the script alive; printing is now handled by the callback
         while True:
             await asyncio.sleep(1.0)
     except KeyboardInterrupt:
