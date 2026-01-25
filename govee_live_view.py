@@ -58,10 +58,28 @@ def detection_callback(device, advertisement_data):
 async def main():
     print(f"--- Monitoring Govee H5198 (Auto-Discovery) ---")
     print("Aggregate view of all 4 probes:")
-    print("Waiting for device connection (looking for Manufacturer ID 0x2331)...")
+    print("Searching for device and waiting for all probes to report...")
+    
     scanner = BleakScanner(detection_callback)
     await scanner.start()
+    
     try:
+        # Syncing Phase: Wait for all 4 probes or 30 second timeout
+        start_wait = asyncio.get_event_loop().time()
+        while any(v == "--" for v in probe_data.values()):
+            found = [f"P{i}" for i, v in probe_data.items() if v != "--"]
+            missing = [f"P{i}" for i, v in probe_data.items() if v == "--"]
+            
+            status = f"\r[Syncing] Found: {', '.join(found) if found else 'None'} | Waiting for: {', '.join(missing)}"
+            print(status.ljust(60), end="", flush=True)
+            
+            if asyncio.get_event_loop().time() - start_wait > 60:
+                print("\n[!] Sync timeout (60s). Some probes may be unplugged.")
+                break
+            await asyncio.sleep(1.0)
+        
+        print("\n[!] Initial sync complete. Starting live monitor...\n")
+        
         while True:
             await asyncio.sleep(1.0)
     except KeyboardInterrupt:

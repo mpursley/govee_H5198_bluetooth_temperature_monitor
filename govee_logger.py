@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import os
+import sys
 from bleak import BleakScanner
 
 # We will auto-discover the device.
@@ -53,7 +54,7 @@ def detection_callback(device, advertisement_data):
             if p3: probe_data[3] = p3
             if p4: probe_data[4] = p4
 
-async def logger_loop():
+async def logger_loop(duration_minutes=None):
     # Ensure log directory exists
     log_dir = "temperature_logs"
     os.makedirs(log_dir, exist_ok=True)
@@ -67,7 +68,11 @@ async def logger_loop():
     print(header)
     print("-" * 55)
     print(f"Logging to: {txt_filename} and {csv_filename}")
-    print("Waiting for device connection (looking for Manufacturer ID 0x2331)...")
+    if duration_minutes:
+        print(f"Duration: {duration_minutes} minutes")
+    else:
+        print("Duration: Indefinite (Press Ctrl+C to stop)")
+    print("-" * 55)
 
     # Initialize TXT file
     with open(txt_filename, "w", encoding="utf-8") as f:
@@ -79,9 +84,16 @@ async def logger_loop():
         f.write("Time,P1,P2,P3,P4\n")
     
     start_time = datetime.datetime.now()
-    duration = datetime.timedelta(minutes=2)
+    if duration_minutes:
+        end_time = start_time + datetime.timedelta(minutes=duration_minutes)
+    else:
+        end_time = None
     
-    while datetime.datetime.now() - start_time < duration:
+    while True:
+        # Check duration if not indefinite
+        if end_time and datetime.datetime.now() >= end_time:
+            break
+
         now = datetime.datetime.now().strftime("%H:%M:%S")
         
         # Formatted line for Console & TXT
@@ -99,9 +111,19 @@ async def logger_loop():
             
         await asyncio.sleep(5)
     
-    print("\n--- 2 minutes complete. Stopping... ---")
+    print(f"\n--- {duration_minutes if duration_minutes else 'Indefinite'} minutes complete. Stopping... ---")
 
 async def main():
+    # Parse CLI args
+    duration = None
+    if len(sys.argv) > 1:
+        try:
+            duration = float(sys.argv[1])
+        except ValueError:
+            print("Usage: python govee_logger.py [minutes]")
+            print("  If [minutes] is omitted, runs indefinitely.")
+            return
+
     print(f"--- 🍖 Govee H5198 Logger (Auto-Discovery Mode) ---")
     print("Logging every 5 seconds. Press Ctrl+C to stop.\n")
     
@@ -109,7 +131,20 @@ async def main():
     await scanner.start()
     
     try:
-        await logger_loop()
+        # Syncing Phase: Wait for all probes before starting the log
+        print("Waiting for all probes to report before starting log...")
+        start_wait = asyncio.get_event_loop().time()
+        while any(v == "--" for v in probe_data.values()):
+            found = [f"P{i}" for i, v in probe_data.items() if v != "--"]
+            print(f"\r[Syncing] Probes found: {', '.join(found) if found else 'None'}", end="", flush=True)
+            
+            if asyncio.get_event_loop().time() - start_wait > 60:
+                print("\n[!] Sync timeout. Starting log with available probes.")
+                break
+            await asyncio.sleep(1.0)
+        
+        print("\n[!] Sync complete. Starting log loop...\n")
+        await logger_loop(duration)
     except asyncio.CancelledError:
         pass
     finally:
