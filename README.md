@@ -70,7 +70,25 @@ python govee_logger.py 0.5      # Run for 30 seconds
 Log files are saved in the `temperature_logs/` folder with unique timestamps:
 
 *   `temperature_log_YYYY-MM-DD_HH-MM-SS.csv` (Easy to import into Excel)
+```
+Time,P1,P2,P3,P4
+12:49:45,114.8°F,77.0°F,77.0°F,102.2°F
+12:49:50,114.8°F,77.0°F,77.0°F,102.2°F
+12:49:55,114.8°F,77.0°F,77.0°F,102.2°F
+12:50:00,114.8°F,77.0°F,77.0°F,102.2°F
+```
+
 *   `temperature_log_YYYY-MM-DD_HH-MM-SS.txt` (Human-readable format)
+E.g.
+```
+Time       |       P1 |       P2 |       P3 |       P4
+-------------------------------------------------------
+12:49:35   |  114.8°F |   77.0°F |       -- |       --
+12:49:40   |  114.8°F |   77.0°F |   77.0°F |  100.4°F
+12:49:45   |  114.8°F |   77.0°F |   77.0°F |  102.2°F
+12:49:50   |  114.8°F |   77.0°F |   77.0°F |  102.2°F
+12:49:55   |  114.8°F |   77.0°F |   77.0°F |  102.2°F
+```
 
 ## Troubleshooting
 
