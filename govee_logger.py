@@ -126,14 +126,24 @@ async def main():
 
     print(f"--- 🍖 Govee H5198 Logger (Auto-Discovery Mode) ---")
     print("Logging every 5 seconds. Press Ctrl+C to stop.\n")
-    
+    print("Searching for Govee device...")
+
     scanner = BleakScanner(detection_callback)
     await scanner.start()
     
     try:
-        # Syncing Phase: Wait for all probes before starting the log
-        print("Waiting for all probes to report before starting log...")
         start_wait = asyncio.get_event_loop().time()
+
+        # 1. Discovery Phase
+        while TARGET_DEVICE_MAC is None:
+            if asyncio.get_event_loop().time() - start_wait > 30:
+                print("\n[!] Discovery timeout (30s). No device found.")
+                return
+            await asyncio.sleep(0.1)
+
+        print("Waiting for all probes to report before starting log...")
+
+        # 2. Syncing Phase
         while any(v == "--" for v in probe_data.values()):
             found = [f"P{i}" for i, v in probe_data.items() if v != "--"]
             print(f"\r[Syncing] Probes found: {', '.join(found) if found else 'None'}", end="", flush=True)
@@ -141,7 +151,7 @@ async def main():
             if asyncio.get_event_loop().time() - start_wait > 60:
                 print("\n[!] Sync timeout. Starting log with available probes.")
                 break
-            await asyncio.sleep(1.0)
+            await asyncio.sleep(0.1)
         
         print("\n[!] Sync complete. Starting log loop...\n")
         await logger_loop(duration)

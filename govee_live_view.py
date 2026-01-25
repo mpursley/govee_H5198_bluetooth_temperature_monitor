@@ -62,15 +62,24 @@ async def main():
     global SYNC_COMPLETE
     print(f"--- Monitoring Govee H5198 (Auto-Discovery) ---")
     print("Aggregate view of all 4 probes:")
-    print("Searching for device and waiting for all probes to report...")
+    print("Searching for Govee device...")
     
     scanner = BleakScanner(detection_callback)
     await scanner.start()
     
     try:
-        # Syncing Phase: Wait for all 4 probes or 60 second timeout
         start_wait = asyncio.get_event_loop().time()
         
+        # 1. Discovery Phase
+        while TARGET_DEVICE_MAC is None:
+            if asyncio.get_event_loop().time() - start_wait > 30:
+                print("\n[!] Discovery timeout (30s). No device found.")
+                return
+            await asyncio.sleep(0.1)
+
+        print("Waiting for all probes to report data...")
+
+        # 2. Syncing Phase
         while any(v == "--" for v in probe_data.values()):
             # Show current values filling in
             status = f"\r[Syncing...] P1: {probe_data[1]:>7} | P2: {probe_data[2]:>7} | P3: {probe_data[3]:>7} | P4: {probe_data[4]:>7}"
@@ -79,7 +88,7 @@ async def main():
             if asyncio.get_event_loop().time() - start_wait > 60:
                 print("\n[!] Sync timeout (60s). Some probes may be unplugged.")
                 break
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
         
         # Enable callback printing
         SYNC_COMPLETE = True
