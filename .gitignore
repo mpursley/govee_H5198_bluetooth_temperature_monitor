@@ -51,3 +51,7 @@ poetry.lock # if you don't want to track it (generally recommended to include it
 temperature_log/
 temperature_logs/
 OLD/
+
+dist/
+build/
+*.spec

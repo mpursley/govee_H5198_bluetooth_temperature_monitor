@@ -11,6 +11,13 @@ This project reverse-engineers the BLE advertisement packets to provide real-tim
 *   **Data Logging:** Logs temperature data to timestamped CSV and TXT files.
 *   **Robust Syncing:** Waits for all connected probes to report data before starting logs to ensure complete datasets.
 
+## Windows Binaries
+
+For users who don't want to install Python, standalone Windows executables are available in the [Releases](https://github.com/yourusername/temperature_monitor/releases) section.
+
+*   `govee_live_view.exe`: Double-click to start monitoring.
+*   `govee_logger.exe`: Run from the command line to specify duration, or double-click to run indefinitely.
+
 ## Prerequisites
 
 *   Python 3.7+
