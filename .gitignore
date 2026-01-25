@@ -52,6 +52,5 @@ temperature_log/
 temperature_logs/
 research/
 
-dist/
 build/
 *.spec
