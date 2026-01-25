@@ -1,6 +1,6 @@
 # Gemini Context & Project Knowledge Base
 
-This document serves as a high-level technical reference for the **Govee H5198 Temperature Monitor** project. It contains discovered protocol details, architectural decisions, and build instructions to assist future development.
+This document serves as a high-level technical reference for the **Govee H5198 Bluetooth Temperature Monitor** project. It contains discovered protocol details, architectural decisions, and build instructions to assist future development.
 
 ## 1. Technical Protocol Details
 

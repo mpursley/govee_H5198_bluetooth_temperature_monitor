@@ -1,4 +1,4 @@
-# Govee H5198 Temperature Monitor & Logger
+# Govee H5198 Bluetooth Temperature Monitor & Logger
 
 A Python-based toolset for monitoring and logging data from the **Govee H5198 WiFi Meat Thermometer** using Bluetooth Low Energy (BLE).
 
@@ -13,7 +13,7 @@ This project reverse-engineers the BLE advertisement packets to provide real-tim
 
 ## Windows Binaries
 
-For users who don't want to install Python, standalone Windows executables are available in the [Releases](https://github.com/yourusername/govee_h5198_monitor/releases) section.
+For users who don't want to install Python, standalone Windows executables are available in the [Releases](https://github.com/yourusername/govee_H5198_bluetooth_temperature_monitor/releases) section.
 
 *   `govee_live_view.exe`: Double-click to start monitoring.
 *   `govee_logger.exe`: Run from the command line to specify duration, or double-click to run indefinitely.
@@ -27,8 +27,8 @@ For users who don't want to install Python, standalone Windows executables are a
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/govee_h5198_monitor.git
-    cd govee_h5198_monitor
+    git clone https://github.com/yourusername/govee_H5198_bluetooth_temperature_monitor.git
+    cd govee_H5198_bluetooth_temperature_monitor
     ```
 
 2.  Install the required Python library (`bleak`):
