@@ -6,6 +6,9 @@ A Python-based toolset for monitoring and logging data from the **[Govee H5198 W
 
 This project reverse-engineers the BLE advertisement packets to provide real-time temperature readings and CSV/TXT logging without requiring the official Govee app or cloud service.
 
+> [!NOTE]
+> This entire repository was **"vibe coded"** by **[Google Gemini 3](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/3-pro)** with no/limited human intervention. Read and review the code before using and contributing updates.
+
 ## Features
 
 *   **Auto-Discovery:** Automatically finds your H5198 device (looks for Manufacturer ID `0x2331`), so you don't need to hardcode a MAC address.
