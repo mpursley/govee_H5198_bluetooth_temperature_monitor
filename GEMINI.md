@@ -32,6 +32,8 @@ The Govee H5198 device broadcasts temperature data via Bluetooth Low Energy (BLE
 ### Environment
 *   **Python:** 3.x
 *   **Dependencies:** `bleak`, `pyinstaller`
+*   **Shell:** PowerShell (Note: `&&` operator is not supported; use separate commands).
+*   **Shell:** PowerShell (Note: `&&` operator is not supported; use separate commands).
 
 ### Building Windows Binaries
 To create standalone `.exe` files for distribution:
