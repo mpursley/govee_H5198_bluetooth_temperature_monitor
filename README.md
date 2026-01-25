@@ -33,9 +33,9 @@ For users who don't want to install Python, standalone Windows executables are a
     cd govee_H5198_bluetooth_temperature_monitor
     ```
 
-2.  Install the required Python library (`bleak`):
+2.  Install the required dependencies:
     ```bash
-    pip install bleak
+    pip install -r requirements.txt
     ```
 
 ## Usage
