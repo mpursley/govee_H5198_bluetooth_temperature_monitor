@@ -1,6 +1,8 @@
 # Govee H5198 Bluetooth Temperature Monitor & Logger
 
 A Python-based toolset for monitoring and logging data from the **[Govee H5198 WiFi Meat Thermometer](https://us.govee.com/blogs/product-review-blog/use-the-govee-wi-fi-grilling-meat-thermometer-to-cook-meats-your-way)** using Bluetooth Low Energy (BLE).
+<img width="800" height="375" alt="image" src="https://github.com/user-attachments/assets/1ddf4ad8-048e-415d-aaa2-3c46cc811b5f" />
+
 
 This project reverse-engineers the BLE advertisement packets to provide real-time temperature readings and CSV/TXT logging without requiring the official Govee app or cloud service.
 
