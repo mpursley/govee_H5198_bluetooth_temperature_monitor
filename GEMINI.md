@@ -51,4 +51,4 @@ pyinstaller --onefile govee_live_view.py
 *   `govee_live_view.py`: Real-time console monitor (Syncs -> Displays).
 *   `govee_logger.py`: CSV/TXT file logger. Supports CLI args for duration (e.g., `python govee_logger.py 60`).
 *   `temperature_logs/`: Directory where timestamped log files are saved.
-*   `OLD/`: Archive of initial research and reverse-engineering scripts.
+*   `research/`: Archive of initial research and reverse-engineering scripts.

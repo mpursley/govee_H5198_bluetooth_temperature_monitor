@@ -50,7 +50,7 @@ poetry.lock # if you don't want to track it (generally recommended to include it
 ## Don't check the Temperature logs into git
 temperature_log/
 temperature_logs/
-OLD/
+research/
 
 dist/
 build/
