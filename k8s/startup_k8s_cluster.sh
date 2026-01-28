@@ -41,4 +41,3 @@ kubectl --context kind-$CLUSTER_NAME -n govee-logger wait --for=condition=availa
 
 echo "Done! You can verify logs with:"
 echo "kubectl --context kind-$CLUSTER_NAME -n govee-logger logs -l app=govee-logger -f"
-echo "Logs are also mounted to /tmp/govee_logs on your host."

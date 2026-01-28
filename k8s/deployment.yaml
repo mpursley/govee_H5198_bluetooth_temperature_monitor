@@ -43,7 +43,3 @@ spec:
         - name: dbus
           hostPath:
             path: /var/run/dbus-host
-        - name: logs
-          hostPath:
-            path: /tmp/govee_logs
-            type: DirectoryOrCreate
