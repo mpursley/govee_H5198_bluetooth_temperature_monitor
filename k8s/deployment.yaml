@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: govee-logger
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: govee-logger
+  namespace: govee-logger
+  labels:
+    app: govee-logger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: govee-logger
+  template:
+    metadata:
+      labels:
+        app: govee-logger
+    spec:
+      hostNetwork: true
+      containers:
+        - name: govee-logger
+          image: govee-logger:local
+          imagePullPolicy: Never
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: dbus
+              mountPath: /var/run/dbus
+            - name: logs
+              mountPath: /app/temperature_logs
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "64Mi"
+              cpu: "200m"
+      volumes:
+        - name: dbus
+          hostPath:
+            path: /var/run/dbus-host
+        - name: logs
+          hostPath:
+            path: /tmp/govee_logs
+            type: DirectoryOrCreate
