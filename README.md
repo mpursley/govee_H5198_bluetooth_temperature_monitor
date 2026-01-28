@@ -16,12 +16,17 @@ This project reverse-engineers the BLE advertisement packets to provide real-tim
 *   **Data Logging:** Logs temperature data to timestamped CSV and TXT files.
 *   **Robust Syncing:** Waits for all connected probes to report data before starting logs to ensure complete datasets.
 
-## Windows Binaries
+## Standalone Binaries
 
-For users who don't want to install Python, standalone Windows executables are available in the [Releases](https://github.com/openworldtechio/govee_H5198_bluetooth_temperature_monitor/releases) section.
+For users who don't want to install Python, standalone executables are available in the [Releases](https://github.com/openworldtechio/govee_H5198_bluetooth_temperature_monitor/releases) section.
 
+### Windows
 *   `govee_live_view.exe`: Double-click to start monitoring.
 *   `govee_logger.exe`: Run from the command line to specify duration, or double-click to run indefinitely.
+
+### Linux
+*   `govee_live_view`: Run `./govee_live_view` to start monitoring.
+*   `govee_logger`: Run `./govee_logger` to log data. Supports command-line arguments for duration.
 
 ## Prerequisites
 

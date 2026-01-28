@@ -46,6 +46,17 @@ pyinstaller --onefile govee_logger.py
 pyinstaller --onefile govee_live_view.py
 ```
 
+### Building Linux Binaries
+To create standalone executables for Linux:
+
+```bash
+# Build Logger
+pyinstaller --onefile govee_logger.py
+
+# Build Live Monitor
+pyinstaller --onefile govee_live_view.py
+```
+
 *Artifacts are placed in the `dist/` directory.*
 
 ## 4. File Structure
