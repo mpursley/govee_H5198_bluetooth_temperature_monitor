@@ -25,7 +25,7 @@ def decode_temp(b):
 
 def detection_callback(device, advertisement_data):
     global TARGET_DEVICE_MAC
-    
+
     # 1. Check if this is a Govee H5198 device (Manufacturer ID 0x2331)
     if 0x2331 not in advertisement_data.manufacturer_data:
         return
@@ -64,42 +64,42 @@ async def logger_loop(duration_minutes=None):
     csv_filename = os.path.join(log_dir, f"temperature_log_{timestamp}.csv")
 
     # Console & TXT Header
-    header = f"{'Time':<10} | {'P1':>8} | {'P2':>8} | {'P3':>8} | {'P4':>8}"
+    header = f" Date/Time | P1 | P2 | P3 | P4"
     print(header)
-    print("-" * 55)
+    print("-" * 60)
     print(f"Logging to: {txt_filename} and {csv_filename}")
     if duration_minutes:
         print(f"Duration: {duration_minutes} minutes")
     else:
         print("Duration: Indefinite (Press Ctrl+C to stop)")
-    print("-" * 55)
+    print("-" * 60)
 
     # Initialize TXT file
     with open(txt_filename, "w", encoding="utf-8") as f:
         f.write(header + "\n")
-        f.write("-" * 55 + "\n")
+        f.write("-" * 60 + "\n")
 
     # Initialize CSV file
     with open(csv_filename, "w", encoding="utf-8") as f:
-        f.write("Time,P1,P2,P3,P4\n")
-    
+        f.write("Date/Time,P1,P2,P3,P4\n")
+
     start_time = datetime.datetime.now()
     if duration_minutes:
         end_time = start_time + datetime.timedelta(minutes=duration_minutes)
     else:
         end_time = None
-    
+
     while True:
         # Check duration if not indefinite
         if end_time and datetime.datetime.now() >= end_time:
             break
 
-        now = datetime.datetime.now().strftime("%H:%M:%S")
-        
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         # Formatted line for Console & TXT
-        txt_line = f"{now:<10} | {probe_data[1]:>8} | {probe_data[2]:>8} | {probe_data[3]:>8} | {probe_data[4]:>8}"
+        txt_line = f"{now:<21} | {probe_data[1]:>8} | {probe_data[2]:>8} | {probe_data[3]:>8} | {probe_data[4]:>8}"
         print(txt_line)
-        
+
         # Write to TXT
         with open(txt_filename, "a", encoding="utf-8") as f:
             f.write(txt_line + "\n")
@@ -108,9 +108,9 @@ async def logger_loop(duration_minutes=None):
         csv_line = f"{now},{probe_data[1]},{probe_data[2]},{probe_data[3]},{probe_data[4]}"
         with open(csv_filename, "a", encoding="utf-8") as f:
             f.write(csv_line + "\n")
-            
+
         await asyncio.sleep(5)
-    
+
     print(f"\n--- {duration_minutes if duration_minutes else 'Indefinite'} minutes complete. Stopping... ---")
 
 async def main():
@@ -130,7 +130,7 @@ async def main():
 
     scanner = BleakScanner(detection_callback)
     await scanner.start()
-    
+
     try:
         start_wait = asyncio.get_event_loop().time()
 
@@ -147,12 +147,12 @@ async def main():
         while any(v == "--" for v in probe_data.values()):
             found = [f"P{i}" for i, v in probe_data.items() if v != "--"]
             print(f"\r[Syncing] Probes found: {', '.join(found) if found else 'None'}", end="", flush=True)
-            
+
             if asyncio.get_event_loop().time() - start_wait > 60:
                 print("\n[!] Sync timeout. Starting log with available probes.")
                 break
             await asyncio.sleep(0.1)
-        
+
         print("\n[!] Sync complete. Starting log loop...\n")
         await logger_loop(duration)
     except asyncio.CancelledError:
